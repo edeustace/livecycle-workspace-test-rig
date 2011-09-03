@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application 
+	backgroundColor="#ffffff"
+	horizontalAlign="left"
+	paddingBottom="4"
+	paddingLeft="4"
+	paddingRight="4"
+	paddingTop="4"
+	layout="vertical"
+	minHeight="600"
+	minWidth="955"
+	creationComplete="onCreationComplete(event)"
+	backgroundGradientAlphas="[0,0]"
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	xmlns:devtools="com.adobe.lces.devtools.*" xmlns:workspace="com.ee.lc.workspace.*">
+	<mx:Script>
+		<![CDATA[
+			import lc.procmgmt.events.SwfDataEvent;
+			
+			import mx.events.FlexEvent;
+			import mx.managers.PopUpManager;
+			import mx.messaging.Channel;
+			import mx.messaging.ChannelSet;
+			import mx.messaging.channels.AMFChannel;
+			
+			[Bindable]
+			public var description:String = "Simulates a swf connection for your workspace swf form.";
+			
+			[Bindable]
+			private var isDoneWithForm:Boolean;
+			
+			[Bindable]
+			private var showSubmittedData:Boolean;
+			
+			[Bindable]
+			private var submittedDataAreaText:String;
+			
+			[Bindable]
+			private var showButtonBar:Boolean;
+			
+			
+			protected function onGoButtonClick(event:MouseEvent):void
+			{
+				loadSwf();
+			}
+			
+			private function loadSwf():void
+			{
+				mockTaskForm.source = swfPath.text;
+				mockTaskForm.load();
+			}
+			
+			protected function onLoadComplete(event:Event):void
+			{
+				trace("onLoadComplete");
+				isDoneWithForm = true;
+			}
+			
+			protected function onIoError(event:IOErrorEvent):void
+			{
+				throw new Error("IO Error");
+			}
+			
+			protected function onFormReady(event:Event):void
+			{
+				trace("RIG::onFormReady");
+				mockTaskForm.setInitalData(inputXml.text);
+				showButtonBar = true;
+			}
+			
+			protected function onCompleteClick(event:MouseEvent):void
+			{
+				trace("onCompleteClick");
+				mockTaskForm.submit();
+			}
+			
+			protected function onPushbackButonClick(event:MouseEvent):void
+			{
+				trace("onPushbackButonClick");
+				mockTaskForm.submitWithSelectedRoute("Pushback");
+			}
+			
+			protected function onFormSubmitData(event:DataEvent):void
+			{
+				trace("onFormSubmitData");
+				showSubmittedData = true;
+				submittedDataAreaText = event.data;
+			}
+			
+			protected function onKeyUp(event:KeyboardEvent):void
+			{
+				if (event.keyCode == Keyboard.ENTER && event.ctrlKey)
+				{
+					loadSwf();
+				}
+			}
+			
+			protected function onSaveClick(event:MouseEvent):void
+			{
+				mockTaskForm.save();
+			}
+			
+			protected function onFormSaveData(event:DataEvent):void
+			{
+				showSubmittedData = true;
+				submittedDataAreaText = event.data;
+			}
+			
+			protected function onCreationComplete(event:FlexEvent):void
+			{
+				autoLogin();
+				parseUrlVariables();
+			}
+			
+			private function parseUrlVariables():void
+			{
+				var url:String = (mx.core.Application.application as Application).url;
+				if (url.indexOf("swf=") != -1)
+				{
+					var out:Array = url.match(/swf=(.*?\.swf)/);
+					swfPath.text = out[1];
+				}
+				
+				if (url.indexOf("routes=") != -1)
+				{
+					var matched:Array = url.match(/routes=(.*?)[&|$]/);
+					
+					if (matched == null)
+					{
+						return;
+					}
+					
+					var matchedString:String = matched[1];
+					
+					matchedString = matchedString.replace(/_/g, " ");
+					
+					var routes:Array = matchedString.split(",");
+					
+					addCustomRoutes(routes);
+					
+				}
+			}
+			
+			private function autoLogin():void
+			{
+				var channel:Channel = new AMFChannel("defaultChannel", "/remoting/messagebroker/amf");
+				var set:ChannelSet = new ChannelSet();
+				set.addChannel(channel);
+				set.login("administrator", "password");
+			}
+			
+			private function addCustomRoutes(routes:Array):void
+			{
+				for each (var s:String in routes)
+				{
+					var b:Button = new Button();
+					b.label = s;
+					b.addEventListener(MouseEvent.CLICK, onCustomRouteClick);
+					
+					customRoutesHolder.addChild(b);
+					
+				}
+			}
+			
+			private function onCustomRouteClick(event:MouseEvent):void
+			{
+				mockTaskForm.submitWithSelectedRoute(event.target.label);
+			}
+		]]>
+	</mx:Script>
+	
+	<mx:Form width="100%">
+		<mx:FormItem>
+			<mx:Label 
+				width="100%"
+				fontSize="14"
+				text="Workspace Rig"/>
+		</mx:FormItem>
+		<mx:FormItem 
+			direction="horizontal"
+			label="swf:">
+			<mx:TextInput id="swfPath"
+						  text="PositionManagement.swf"/>
+			<mx:Label text=" specify path to swf"/>
+		</mx:FormItem>
+		<mx:FormItem 
+			width="100%"
+			direction="horizontal"
+			label="input xml:">
+			<mx:TextArea id="inputXml"
+						 width="100%" height="{isDoneWithForm ? 70 : 300}"
+						 keyUp="onKeyUp(event)"/>
+			<mx:Label text="specify input xml"/>
+		</mx:FormItem>
+		<mx:FormItem>
+			<mx:Button 
+				label="go"
+				click="onGoButtonClick(event)"/>
+		</mx:FormItem>
+	</mx:Form>
+	
+	<mx:ViewStack 
+		width="100%" height="100%"
+		selectedIndex="{ showSubmittedData ? 1 : 0 }">
+		
+		<mx:VBox 
+			width="100%" height="100%"
+			verticalGap="0">
+			<workspace:RigSwfForm id="mockTaskForm"
+								  width="100%" height="100%"
+								  complete="onLoadComplete(event)"
+								  ioError="onIoError(event)"
+								  formReady="onFormReady(event)"
+								  formSubmitData="onFormSubmitData(event)"
+								  formSaveData="onFormSaveData(event)"/>
+			<mx:HBox 
+				width="100%" height="40"
+				bottom="0"
+				backgroundColor="#ffecfc"
+				visible="{showButtonBar}">
+				<mx:Button 
+					enabled="{ !mockTaskForm.clean }"
+					label="Save"
+					click="onSaveClick(event)"
+					visible="{ mockTaskForm.showSaveButton }"/>
+				<mx:Spacer width="100%"/>
+				<mx:HBox id="customRoutesHolder"
+						 visible="{mockTaskForm.showRouteButtons}">
+					
+				</mx:HBox>
+				<mx:Button 
+					enabled="{ mockTaskForm.valid }"
+					label="Complete"
+					click="onCompleteClick(event)"
+					visible="{mockTaskForm.showRouteButtons}"/>
+			</mx:HBox>
+		</mx:VBox>
+		
+		<mx:VBox visible="{showSubmittedData}">
+			<mx:Label text="Submitted data:"/>
+			<mx:TextArea 
+				width="100%" height="100%"
+				text="{submittedDataAreaText}"/>
+			<mx:Button 
+				label="close"
+				click="showSubmittedData = false"/>
+		</mx:VBox>
+		
+	</mx:ViewStack>
+	
+	
+</mx:Application>
