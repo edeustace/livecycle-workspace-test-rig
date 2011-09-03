@@ -121,58 +121,9 @@ package com.ee.lc.workspace
 				_formLoaderInfo.sharedEvents.addEventListener(SwfAppButtonEvent.SHOW_SAVE_BUTTON, showSaveHandler, false, 0, true);
 				_formLoaderInfo.sharedEvents.addEventListener(SwfAppButtonEvent.HIDE_ALL_ROUTE_BUTTONS, hideCompleteHandler, false, 0, true);
 				_formLoaderInfo.sharedEvents.addEventListener(SwfAppButtonEvent.SHOW_ALL_ROUTE_BUTTONS, showCompleteHandler, false, 0, true);
-				/*
 				
-				_formLoaderInfo.sharedEvents.addEventListener(SwfAppEvent.FULL_SCREEN, maximizeHandler, false, 0, true);
-				_formLoaderInfo.sharedEvents.addEventListener(SwfAppEvent.MINIMIZE_SCREEN, minimizeHandler, false, 0, true);
-				_formLoaderInfo.sharedEvents.addEventListener(SwfAppEvent.CLOSE, closeHandler, false, 0, true);
-				_formLoaderInfo.sharedEvents.addEventListener(SwfAppButtonEvent.HIDE_ROUTE_BUTTON, hideRouteButtonHandler,
-				false, 0, true);
-				_formLoaderInfo.sharedEvents.addEventListener(SwfAppButtonEvent.SHOW_ROUTE_BUTTON, showRouteButtonHandler,
-				false, 0, true);
-				_formLoaderInfo.sharedEvents.addEventListener(SwfAppButtonEvent.DISABLE_ROUTE_BUTTON, disableRouteButtonHandler,
-				false, 0, true);
-				_formLoaderInfo.sharedEvents.addEventListener(SwfAppButtonEvent.ENABLE_ROUTE_BUTTON, enableRouteButtonHandler,
-				false, 0, true);
-				
-				_formLoaderInfo.sharedEvents.addEventListener(SwfAppEvent.HIDE_ALL_CONTAINER_VIEWS, containerVisibilityHandler,
-				false, 0, true);
-				_formLoaderInfo.sharedEvents.addEventListener(SwfAppEvent.HIDE_TASK_DETAILS_VIEW, containerVisibilityHandler,
-				false, 0, true);
-				_formLoaderInfo.sharedEvents.addEventListener(SwfAppEvent.SHOW_TASK_DETAILS_VIEW, containerVisibilityHandler,
-				false, 0, true);
-				_formLoaderInfo.sharedEvents.addEventListener(SwfAppEvent.HIDE_TASK_FORM_VIEW, containerVisibilityHandler,
-				false, 0, true);
-				_formLoaderInfo.sharedEvents.addEventListener(SwfAppEvent.SHOW_TASK_FORM_VIEW, containerVisibilityHandler,
-				false, 0, true);
-				_formLoaderInfo.sharedEvents.addEventListener(SwfAppEvent.HIDE_ATTACHMENTS_VIEW, containerVisibilityHandler,
-				false, 0, true);
-				_formLoaderInfo.sharedEvents.addEventListener(SwfAppEvent.SHOW_ATTACHMENTS_VIEW, containerVisibilityHandler,
-				false, 0, true);
-				_formLoaderInfo.sharedEvents.addEventListener(SwfAppEvent.HIDE_DIRECTIVES_VIEW, containerVisibilityHandler,
-				false, 0, true);
-				_formLoaderInfo.sharedEvents.addEventListener(SwfAppEvent.SHOW_DIRECTIVES_VIEW, containerVisibilityHandler,
-				false, 0, true);
-				_formLoaderInfo.sharedEvents.addEventListener(SwfAppButtonEvent.RENAME_ROUTE_BUTTON, renameRouteButton, false,
-				0, true);
-				_formLoaderInfo.sharedEvents.addEventListener(SwfAppButtonEvent.CHANGE_ROUTE_BUTTON_TOOLTIP, changeTooltip,
-				false, 0, true);
-				
-				// the following events need to be trapped for each all of our parent components
-				var component:UIComponent = this;
-				while (component != parentApplication)
-				{
-				component.addEventListener(FlexEvent.SHOW, showAndHideHandler, false, 0, true);
-				component.addEventListener(FlexEvent.ADD, showAndHideHandler, false, 0, true);
-				
-				component.addEventListener(FlexEvent.HIDE, showAndHideHandler, false, 0, true);
-				component.addEventListener(FlexEvent.REMOVE, showAndHideHandler, false, 0, true);
-				
-				component = UIComponent(component.parent);
-				}*/
 			}
 			
-			//_token.callResultHandlers(null);
 		}
 		
 		protected function showCompleteHandler(event:Event):void
